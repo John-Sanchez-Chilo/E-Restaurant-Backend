@@ -9,6 +9,13 @@ users = {}
 def handle_connect():
     print("Client connected!")
 
+@socketio.on("handle-order")
+def handle_order(order):
+    #esta orden debe ser almacenada
+    emit('send-order', order, broadcast=True)
+    print("Client connected!")
+    print("Se envio la orden")
+
 @socketio.on("user_join")
 def handle_user_join(username):
     print(f"User {username} joined!")
