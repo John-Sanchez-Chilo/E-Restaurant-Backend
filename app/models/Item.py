@@ -1,8 +1,8 @@
 #from ..extensions import mysql_pool
-from extensions import mysql_pool
+from ..extensions import mysql_pool
 class Item:
     def __init__(self):
-        self.mysql_pool = mysql_pool()
+        self.mysql_pool = mysql_pool
 
     def add_item(self, _name, _type, _description, _price, _image):
         params = {
@@ -12,7 +12,7 @@ class Item:
                 '_price': _price,
                 '_image': _image,
         }
-        query = 'insert into item values (_name, _type, _description, _price, _image) values ( %(_name)s, %(_type)s, %(_description)s, %(_price)s, %(_image)s)'
+        query = 'insert into item(_name, _type, _description, _price, _image) values ( %(_name)s, %(_type)s, %(_description)s, %(_price)s, %(_image)s)'
         cursor = self.mysql_pool.execute(query, params, commit=True)
         data = {'_name': _name, '_type': _type, '_description': _description, '_price': _price, '_image': _image}    
         return data

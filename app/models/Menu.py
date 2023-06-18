@@ -1,14 +1,14 @@
-from extensions import mysql_pool
+from app.extensions import mysql_pool
 class Menu:
     def __init__(self):
-        self.mysql_pool = mysql_pool()
+        self.mysql_pool = mysql_pool
 
     def add_menu(self, _name, _description):
         params = {
                 '_name': _name,
                 '_description': _description,
         }
-        query = 'insert into menu values (_name, _description) values ( %(_name)s, %(_description)s)'
+        query = 'insert into menu(_name, _description) values ( %(_name)s, %(_description)s)'
         cursor = self.mysql_pool.execute(query, params, commit=True)
         data = {'_name': _name, '_description': _description}
         return data

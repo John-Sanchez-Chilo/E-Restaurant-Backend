@@ -1,14 +1,14 @@
 from extensions import mysql_pool
 class Receipt:
     def __init__(self):
-        self.mysql_pool = mysql_pool()
+        self.mysql_pool = mysql_pool
 
     def add_receipt(self, date_time, _total_amount):
         params = {
                 'date_time': date_time,
                 '_total_amount': _total_amount,
         }
-        query = 'insert into receipt values (date_time, _total_amount) values ( %(date_time)s, %(_total_amount)s)'   
+        query = 'insert into receipt(date_time, _total_amount) values ( %(date_time)s, %(_total_amount)s)'   
         cursor = self.mysql_pool.execute(query, params, commit=True)
         data = {'date_time': date_time, '_total_amount': _total_amount}
         return data
