@@ -3,9 +3,9 @@ from flask_socketio import emit
 
 from .extensions import socketio
 from .models.Menu_Controller import MenuController
+
+
 menu_controller = MenuController()
-menu_controller.set_menu(1)
-print("events - menu-controller:",menu_controller.menu)
 
 @socketio.on("connect")
 def handle_connect():
@@ -18,11 +18,34 @@ def handle_order():
     print("Se envio el menu")
 
 #administrador
+@socketio.on("get-menus")
+def get_menus(obje):
+    emit('get-menus', menu_controller.get_menus(), broadcast=True)
+    print("Se envio los menus")
+
+@socketio.on("get-items-from-menu")
+def get_menus(id_menu):
+    emit('get-items-from-menu', menu_controller.get_all_items_from_menu(id_menu), broadcast=True)
+    print("Se envio los menus")
+
+@socketio.on("handle-menu")
+def handle_menu(menu):
+    menu_controller.set_menu(menu)
+    emit('receive-menu', menu_controller.get_menu_items(), broadcast=True)
+    print("Se recibio el menu")
+
+@socketio.on("send-menu")
+def send_menu():
+    emit('receive-menu', menu_controller.get_menu_items(), broadcast=True)
+    print("Se envio el menu al cliente")
+
+
 @socketio.on("handle-order")
 def handle_order(order):
     #esta orden debe ser almacenada
     emit('send-order', order, broadcast=True)
     print("Se envio la orden")
+
 
 #estos dos son de ejemplo
 users = {}

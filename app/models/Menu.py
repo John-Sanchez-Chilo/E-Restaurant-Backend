@@ -16,14 +16,15 @@ class Menu:
         params = {'id_menu' : id_menu}
         cursor = self.mysql_pool.execute('select id_menu, _name, _description from menu where id_menu=%(id_menu)s', params)
         rv = cursor[0]
-        data = {'id_menu': rv[0], '_name': rv[1], '_description': rv[2]}
+        data = {'id_menu': rv[0], 'name': rv[1], 'description': rv[2]}
         return data
     def get_all_menu(self):
         cursor = self.mysql_pool.execute('select * from menu')
         data = []
         for rv in cursor:
-                content = {'id_menu': rv[0], '_name': rv[1], '_description': rv[2]}
+                content = {'id_menu': rv[0], 'name': rv[1], 'description': rv[2]}
                 data.append(content)
+        print(data)
         return data
     def delete_menu(self, id_menu):
         params = {'id_menu' : id_menu}
