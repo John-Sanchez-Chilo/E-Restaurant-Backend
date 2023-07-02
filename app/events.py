@@ -13,15 +13,47 @@ def handle_connect():
 
 #cliente
 @socketio.on("send-menu")
-def handle_order():
+def send_menu():
     emit('receive-menu', menu_controller.menu, broadcast=True)
     print("Se envio el menu")
 
+@socketio.on("get-ready-menu")
+def get_ready_menu():
+    emit('get-ready-menu', menu_controller.get_ready_menu(), broadcast=True)
+    print("Se envio el menu listo")
+
+
+
 #administrador
+@socketio.on("get-complete-menu")
+def get_complete_menu():
+    emit('get-complete-menu', menu_controller.get_complete_menu(), broadcast=True)
+    print("Se envio el menu completo")
+
 @socketio.on("get-menus")
-def get_menus(obje):
+def get_menus():
     emit('get-menus', menu_controller.get_menus(), broadcast=True)
     print("Se envio los menus")
+
+@socketio.on("set-menu")
+def set_menu(menu):
+    menu_controller.set_actual_menu(menu)
+    emit('get-complete-menu',menu_controller.get_complete_menu() , broadcast=True)
+    print("Se actualizo los menus")
+
+@socketio.on("enable-item")
+def enable_item(item):
+    print("socket enable",item)
+    menu_controller.enable_item(item['id_item'], item['amount'])
+    emit('get-item-from-ready-menu', item , broadcast=True)
+    print("Se habilito un item")
+
+@socketio.on("disable-item")
+def disable_item(item):
+    menu_controller.disable_item(item)
+    #emit('get-complete-item',menu_controller.get_complete_item() , broadcast=True)
+    print("Se deshabilito un item")
+
 
 @socketio.on("get-items-from-menu")
 def get_menus(id_menu):
@@ -44,7 +76,7 @@ def send_menu():
 def handle_order(order):
     #esta orden debe ser almacenada
     emit('send-order', order, broadcast=True)
-    print("Se envio la orden")
+    print("Se recibio y envio la orden")
 
 
 #estos dos son de ejemplo
