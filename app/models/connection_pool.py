@@ -6,8 +6,9 @@ dbconfig = {
     "host":"localhost",
     "port":"3306",
     "user":"root",
-    "password":"admin_1572003_jesc",
+    "password":"lu123",
     "database":"e_restaurant",
+    
 }
 
 class MySQLPool(object):
@@ -31,7 +32,7 @@ class MySQLPool(object):
             pool_name=pool_name,
             pool_size=pool_size,
             pool_reset_session=True,
-            **dbconfig)
+            **dbconfig,auth_plugin='mysql_native_password')
         return pool
 
     def close(self, conn, cursor):

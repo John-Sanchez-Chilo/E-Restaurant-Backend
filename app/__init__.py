@@ -9,7 +9,7 @@ def create_app():
     app.config["SECRET_KEY"] = "secret"
 
     #app.register_blueprint(main)
-    CORS(app, origins=['http://localhost:8081/'])
+    CORS(app, origins=['http://localhost:8080/'])
     #CORS(app)
     socketio.init_app(app)
 

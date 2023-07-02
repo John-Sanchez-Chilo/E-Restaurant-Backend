@@ -3,9 +3,11 @@ from flask_socketio import emit
 
 from .extensions import socketio
 from .models.Menu_Controller import MenuController
-
+from .models.Order_Controller import OrderController
+from .models.Order_Controller import Order
 
 menu_controller = MenuController()
+order_controller = OrderController()
 
 @socketio.on("connect")
 def handle_connect():
@@ -25,6 +27,7 @@ def get_ready_menu():
 
 
 #administrador
+
 @socketio.on("get-complete-menu")
 def get_complete_menu():
     emit('get-complete-menu', menu_controller.get_complete_menu(), broadcast=True)
@@ -78,7 +81,6 @@ def handle_order(order):
     emit('send-order', order, broadcast=True)
     print("Se recibio y envio la orden")
 
-
 #estos dos son de ejemplo
 users = {}
 @socketio.on("user_join")
@@ -94,3 +96,58 @@ def handle_new_message(message):
         if users[user] == request.sid:
             username = user
     emit("chat", {"message": message, "username": username}, broadcast=True)
+    
+    
+#levi
+@socketio.on('handle-order')
+def handle_order(order_data):
+    # Extraer los detalles de la orden
+    msg = order_data.get('msg')
+    dishes = order_data.get('dishes', [])
+    
+    order = Order(order_controller.current_order_id, msg)
+    order_controller.current_order_id += 1
+
+    for dish_data in dishes:
+        dish = {
+            'dishId': dish_data.get('dishId'),
+            'name': dish_data.get('name'),
+            'status': 'order waiting'
+        }
+        order.add_dish(dish)
+
+    
+
+    order_controller.add_order(order)#Añadir a la cola
+    print(type(order_controller.to_json()))
+    emit('order-updated', order_controller.to_json(), broadcast=True)
+    
+    #emit('orderStatusChanged', order.__dict__, broadcast=True) #Emit
+
+@socketio.on('updateOrderStatus')
+def update_order_status(data):
+    order_id = data['orderId']
+    dishes = data['dishes']
+
+    # OBtener la orden
+    order = order_controller.get_order_by_id(order_id)
+    if order:
+        for dish in dishes:
+            dish_id = dish['dishId']
+            estado = dish['estado']
+
+            # Encontrar la orden
+            target_dish = next((d for d in order.dishes if d['dishId'] == dish_id), None)
+            if target_dish:
+                target_dish['estado'] = order.status
+
+                if estado == 'order in process':
+                    order.remove_dish(target_dish)
+
+        # Emit event to update the order status
+        emit('orderStatusChanged', order.__dict__, broadcast=True)
+
+        # Move the order to the next phase if all dishes are in process
+        if all(dish['estado'] == 'order in process' for dish in order.dishes):
+            order.update_status('order ready')
+            emit('orderStatusChanged', order.__dict__, broadcast=True)
