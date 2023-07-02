@@ -24,7 +24,7 @@ class MenuItem:
             where menu_item.id_menu =%(id_menu)s and menu_item.id_item =%(id_item)s '''
             , params)
         rv = cursor[0]
-        data = {'id_item': rv[0], '_name': rv[1], '_type': rv[2], '_description': rv[3], '_price': rv[4], '_image': rv[5]}
+        data = {'id_item': rv[0], 'name': rv[1], 'type': rv[2], 'description': rv[3], 'price': rv[4], 'image': rv[5]}
         return data
     def get_all_item_from_menu(self, id_menu):
         params = {
@@ -38,7 +38,7 @@ class MenuItem:
             , params)
         data = []
         for rv in cursor:
-                content = {'id_item': rv[0], '_name': rv[1], '_type': rv[2], '_description': rv[3], '_price': rv[4], '_image': rv[5]}
+                content = {'id_item': rv[0], 'name': rv[1], 'type': rv[2], 'description': rv[3], 'price': rv[4], 'image': rv[5]}
                 data.append(content)
         return data
     def delete_menu_item(self, id_menu_item):
