@@ -38,7 +38,7 @@ class MenuItem:
             , params)
         data = []
         for rv in cursor:
-                content = {'id_item': rv[0], 'name': rv[1], 'type': rv[2], 'description': rv[3], 'price': rv[4], 'image': rv[5]}
+                content = {'id_item': str(rv[0]), 'name': rv[1], 'type': rv[2], 'description': rv[3], 'price': rv[4], 'image': rv[5]}
                 data.append(content)
         return data
     def delete_menu_item(self, id_menu_item):

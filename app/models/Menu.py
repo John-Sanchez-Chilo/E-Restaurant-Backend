@@ -24,7 +24,6 @@ class Menu:
         for rv in cursor:
                 content = {'id_menu': rv[0], 'name': rv[1], 'description': rv[2]}
                 data.append(content)
-        print(data)
         return data
     def delete_menu(self, id_menu):
         params = {'id_menu' : id_menu}
