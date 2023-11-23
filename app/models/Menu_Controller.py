@@ -1,51 +1,57 @@
-from .Menu import Menu
+#from .Menu import Menu
 from .Menu_Item import MenuItem
+#from ..extensions import menu_item_model
+
 class MenuController:
     def __init__(self):
-        self.menu_database = Menu()
+        #self.menu_database = Menu()
+        
         self.menu_item_database = MenuItem()
+        #self.menu_item_database = menu_item_model
         self.menu = {
+            'id_menu': '',
             'name': '',
             'description':'',
-            'items': {}
+            'items': {},
+            'active': False
             }
+        self.items = {}
+        self.active = False
     
-    def get_complete_menu(self):
+    #def get_complete_menu(self):
+    def get_current_menu_and_items(self):
         print("Menu controller: get_complete_menu")
         return self.menu
     
-    def get_menus(self):
-        print("Menu controller: get_menus")
-        return self.menu_database.get_all_menu() #devuelve un array de objetos menu
+    #esta funcion sera reemplazada por una ruta en la API
+    #def get_menus(self):
+    #    print("Menu controller: get_menus")
+    #    return self.menu_database.get_all_menu() #devuelve un array de objetos menu
     
-    def set_actual_menu(self, menu):
-        print("Menu controller: set_actual_menu")
+    def set_current_menu(self, menu):
+        print("Menu controller: set_current_menu")
+        print("menu", menu)
         self.menu = menu
         self.menu['items'] = {}
         items = self.menu_item_database.get_all_item_from_menu(menu['id_menu'])
+        print("controller items", items)
         for item in items:
             self.menu['items'][item['id_item']] = item
             self.menu['items'][item['id_item']]['amount'] = 0
             self.menu['items'][item['id_item']]['enabled'] = False
-            #item['amount'] = 0
-            #item['enabled'] = False
+        #self.active = True
+        self.menu['active'] = True
         return self.menu
 
     def enable_item(self, id_item, amount):
         print("Menu controller: enable_item")
         self.menu['items'][id_item]['amount'] = amount
         self.menu['items'][id_item]['enabled'] = True
-        #for item in self.menu['items']:
-        #    if(item['id_item'] == id_item):
-        #        item['amount'] = amount
-        #        item['enabled'] = True
     
     def disable_item(self, id_item):
         print("Menu controller: disable_item")
         self.menu['items'][id_item]['enabled'] = False
-        #for item in self.menu['items']:
-        #    if(item['id_item'] == id_item):
-        #        item['enabled'] = False
+
 
     
     #Cliente
@@ -79,10 +85,20 @@ class MenuController:
         return True
     
     
-
+    def check_enable_menu(self):
+        for item in self.menu['items'].values():
+            if(item['enabled'] == True):
+                return True
+        self.menu['active'] = False
+        return False
 
 
     
+
+
+
+
+
     
 
 
@@ -92,24 +108,3 @@ class MenuController:
         print("Menu controller: get_all_items_from_menu")
         return self.menu_item_database.get_all_item_from_menu(id_menu) #devuelve un array de objetos item
     
-    
-
-    
-
-    #--------------------------------
-
-    def set_menu(self, menu):
-        print("Menu controller: set_menu")
-        self.menu['items'] = menu
-
-    def set_current_menu(self, id_menu):
-        print("Menu controller: set_current_menu")
-        #print("Entre get Menu")
-        all_menu = self.menu_item_database.get_all_item_from_menu(id_menu)
-        for item in all_menu:
-            #print("item:",item)
-            self.menu[item['id_item']] = {'amount' : 0, 'name': item['_name'], 'type': item['_type'], 'description': item['_description'], 'price': item['_price'], 'image': item['_image']}
-
-    def get_menu_items(self):
-        print("Menu controller: get_menu_items")
-        return self.menu

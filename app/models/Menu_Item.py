@@ -12,6 +12,7 @@ class MenuItem:
         cursor = self.mysql_pool.execute(query, params, commit=True)
         data = {'id_menu': id_menu, 'id_item': id_item}
         return data
+    
     def get_item_from_menu(self, id_menu, id_item):
         params = {
              'id_menu' : id_menu,
@@ -26,6 +27,7 @@ class MenuItem:
         rv = cursor[0]
         data = {'id_item': rv[0], 'name': rv[1], 'type': rv[2], 'description': rv[3], 'price': rv[4], 'image': rv[5]}
         return data
+    
     def get_all_item_from_menu(self, id_menu):
         params = {
              'id_menu' : id_menu,
